@@ -12,8 +12,9 @@ import qualified Data.ByteString.Lazy as LBS
 
 import Distribution.PackageDescription
 import Distribution.PackageDescription.Parse (readPackageDescription)
-import Distribution.Verbosity (normal)
-import Distribution.ModuleName (ModuleName)
+import Distribution.Verbosity                (normal)
+import Distribution.ModuleName               (ModuleName)
+import Distribution.Package                  (Dependency)
 import System.Directory (removeFile)
 import Control.Concurrent.Async
 
@@ -43,6 +44,9 @@ hackagePackageDescription packageName vs = do
   wait go
 
 
-originalExposedModules :: GenericPackageDescription -> Maybe [ModuleName]
-originalExposedModules pd = (exposedModules . condTreeData) <$> condLibrary pd
+libOrigExposedModules :: GenericPackageDescription -> Maybe [ModuleName]
+libOrigExposedModules pd = (exposedModules . condTreeData) <$> condLibrary pd
+
+libDependencies :: GenericPackageDescription -> Maybe [Dependency]
+libDependencies pd = (targetBuildDepends . libBuildInfo . condTreeData) <$> condLibrary pd
 
