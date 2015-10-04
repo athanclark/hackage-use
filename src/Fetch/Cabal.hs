@@ -8,12 +8,12 @@ import Fetch.Versions
 
 import Network.HTTP.Client
 import Network.HTTP.Client.TLS
-import qualified Data.Text            as T
 import qualified Data.ByteString.Lazy as LBS
 
 import Distribution.PackageDescription
 import Distribution.PackageDescription.Parse (readPackageDescription)
 import Distribution.Verbosity (normal)
+import Distribution.ModuleName (ModuleName)
 import System.Directory (removeFile)
 import Control.Concurrent.Async
 
@@ -41,4 +41,8 @@ hackagePackageDescription packageName vs = do
     removeFile tempCabalFile
     return description
   wait go
+
+
+originalExposedModules :: GenericPackageDescription -> Maybe [ModuleName]
+originalExposedModules pd = (exposedModules . condTreeData) <$> condLibrary pd
 
