@@ -11,18 +11,19 @@ import Network.HTTP.Client.TLS
 import qualified Data.Text            as T
 import qualified Data.ByteString.Lazy as LBS
 
-import Distribution.PackageDescription.Parse
+import Distribution.PackageDescription
+import Distribution.PackageDescription.Parse (readPackageDescription)
+import Distribution.Verbosity (normal)
+import System.Directory (removeFile)
+import Control.Concurrent.Async
 
 
-instance FromJSON HackagePackage where
-  parseJSON (Object xs) = HackagePackage <$> xs .: "packageName"
-  parseJSON _ = fail "Non-object provided to HackagePackage parser"
 
 -- | Ping the Hackage server for a list of all packages
-hackagePackages :: String -- ^ package name
-                -> HackageVersion
-                -> IO [GenericPackageDescription]
-hackagePackages packageName vs = do
+hackagePackageDescription :: String -- ^ package name
+                          -> HackageVersion
+                          -> IO GenericPackageDescription
+hackagePackageDescription packageName vs = do
   let packageString = packageName ++ "-" ++ showHackageVersion vs
 
   manager <- newManager tlsManagerSettings
@@ -34,8 +35,10 @@ hackagePackages packageName vs = do
   let unparsed = responseBody unparsed'
       tempCabalFile = "tmp/" ++ packageString ++ ".cabal"
 
-  LBS.writeFile tempCabalFile unparsed
-
-  description <- readPackageDescription normal tempCabalFile
-  return description
+  go <- async $ do
+    LBS.writeFile tempCabalFile unparsed
+    description <- readPackageDescription normal tempCabalFile
+    removeFile tempCabalFile
+    return description
+  wait go
 

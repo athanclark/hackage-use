@@ -16,11 +16,14 @@ Library
   Exposed-Modules:      Fetch
                         Fetch.Packages
                         Fetch.Versions
+                        Fetch.Cabal
   Build-Depends:        base >= 4 && < 5
                       , aeson
+                      , async
                       , attoparsec
                       , bytestring
-                      , haskell-src-exts
+                      , Cabal
+                      , directory
                       , http-client
                       , http-client-tls
                       , http-types
@@ -30,18 +33,20 @@ Library
 Executable hackage-use
   Default-Language:     Haskell2010
   HS-Source-Dirs:       src
-  GHC-Options:          -Wall -O2
+  GHC-Options:          -Wall -threaded
   Main-Is:              Main.hs
   Other-Modules:        Fetch
                         Fetch.Packages
                         Fetch.Versions
+                        Fetch.Cabal
   Build-Depends:        base >= 4 && < 5
                       , aeson
+                      , async
                       , attoparsec
+                      , Cabal
                       , data-default
                       , directory
                       , bytestring
-                      , haskell-src-exts
                       , http-client
                       , http-client-tls
                       , http-types

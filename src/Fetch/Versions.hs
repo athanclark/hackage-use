@@ -8,8 +8,10 @@ module Fetch.Versions where
 import Network.HTTP.Client
 import Network.HTTP.Client.TLS
 import Data.Aeson                     as Aeson
-import qualified Data.Text            as T
 import Data.Attoparsec.Text           as Atto
+import qualified Data.Text            as T
+
+import Data.List (intercalate)
 
 
 newtype HackageVersion = HackageVersion
