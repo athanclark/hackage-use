@@ -61,7 +61,8 @@ haskellModules packageName vs = do
                                 else (m,fromJust f) : acc)
                               []
                               moduleSources'
-    mModules :: [ParseResult (ModuleName, Module)] <- mapM (\(m,f) -> (m,) <$$> parseFile f) moduleSources
+    mModules :: [ParseResult (ModuleName, Module)] <-
+      mapM (\(m,f) -> (m,) <$$> parseFile f) moduleSources
     let modules = Map.fromList $ fromParseResult $ sequenceA mModules
 
     modules `seq` removeDirectoryRecursive tempDir
