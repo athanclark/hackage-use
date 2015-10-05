@@ -1,6 +1,7 @@
 {-# LANGUAGE
     OverloadedStrings
   , TupleSections
+  , ScopedTypeVariables
   #-}
 
 module Fetch.Code where
@@ -21,6 +22,7 @@ import Distribution.ModuleName         (ModuleName, toFilePath)
 import qualified Data.Map              as Map
 import qualified Data.ByteString.Lazy  as LBS
 import Data.Maybe
+import Data.Functor.Syntax
 
 
 -- | Ping the Hackage server for a list of all packages
@@ -59,17 +61,8 @@ haskellModules packageName vs = do
                                 else (m,fromJust f) : acc)
                               []
                               moduleSources'
-        modules = Map.fromList $ fromParseResult $
-                    traverse (\(m,f) ->
-                               let mode = defaultParseMode { parseFilename = toFilePath m
-                                                           , baseLanguage = Haskell2010
-                                                           , extensions = []
-                                                           , ignoreLanguagePragmas = True
-                                                           , ignoreLinePragmas = True
-                                                           , fixities = Nothing
-                                                           }
-                               in (m,) <$> parseModuleWithMode mode f)
-                             moduleSources
+    mModules :: [ParseResult (ModuleName, Module)] <- mapM (\(m,f) -> (m,) <$$> parseFile f) moduleSources
+    let modules = Map.fromList $ fromParseResult $ sequenceA mModules
 
     modules `seq` removeDirectoryRecursive tempDir
     return modules

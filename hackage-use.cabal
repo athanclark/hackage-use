@@ -24,6 +24,7 @@ Library
                       , attoparsec
                       , bytestring
                       , Cabal
+                      , composition-extra
                       , containers
                       , directory
                       , haskell-src-exts
@@ -51,6 +52,7 @@ Executable hackage-use
                       , async
                       , attoparsec
                       , Cabal
+                      , composition-extra
                       , containers
                       , data-default
                       , directory
