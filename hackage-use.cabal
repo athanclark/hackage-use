@@ -17,18 +17,24 @@ Library
                         Fetch.Packages
                         Fetch.Versions
                         Fetch.Cabal
+                        Fetch.Code
   Build-Depends:        base >= 4 && < 5
                       , aeson
                       , async
                       , attoparsec
                       , bytestring
                       , Cabal
+                      , containers
                       , directory
+                      , haskell-src-exts
+                      , hint
                       , http-client
                       , http-client-tls
                       , http-types
                       , persistent
+                      , tar
                       , text
+                      , zlib
 
 Executable hackage-use
   Default-Language:     Haskell2010
@@ -39,14 +45,17 @@ Executable hackage-use
                         Fetch.Packages
                         Fetch.Versions
                         Fetch.Cabal
+                        Fetch.Code
   Build-Depends:        base >= 4 && < 5
                       , aeson
                       , async
                       , attoparsec
                       , Cabal
+                      , containers
                       , data-default
                       , directory
                       , bytestring
+                      , haskell-src-exts
                       , http-client
                       , http-client-tls
                       , http-types
@@ -54,8 +63,10 @@ Executable hackage-use
                       , optparse-applicative
                       , path
                       , persistent
+                      , tar
                       , text
                       , yaml
+                      , zlib
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
